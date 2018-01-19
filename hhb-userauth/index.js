@@ -19,3 +19,7 @@ class User extends Application{
 		return Object.create(this[USER_KEY])
 	}
 }
+
+exports = module.exports = new User
+
+exports.User = User

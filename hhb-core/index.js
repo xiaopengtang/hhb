@@ -1,25 +1,6 @@
 'use strict'
 
 exports = module.exports = {
-	Application: require('./lib/application')
+	Application: require('./lib/application'),
+	config: require('./lib/config')
 }
-
-
-Object.defineProperties(exports, {
-	config: {
-		configurable: false,
-		writable: false,
-		get(){
-			// 
-		}
-	},
-	init: {
-		configurable: false,
-		writable: false,
-		get(){
-			return function(){
-				// 
-			}
-		}
-	}
-})
