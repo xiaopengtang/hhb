@@ -1,0 +1,17 @@
+{
+  "name": "hhb-message",
+  "version": "1.0.0",
+  "description": "message center for hhb",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "message"
+  ],
+  "author": "txp",
+  "license": "ISC",
+  "dependencies": {
+    "strophe.js": "^1.2.14"
+  }
+}
