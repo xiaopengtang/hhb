@@ -8,7 +8,9 @@ const EVT_EMIT = Symbol('hhb#EVT_EMIT')
 const EVT_LISTEN = Symbol('hhb#EVT_LISTEN')
 
 class Application {
-	[EVT_KEY] = {}
+	constructor(){
+		this[EVT_KEY] = {}
+	}
 	@check.isAllowEventListener
 	on(name, event){
 		this[EVT_KEY][name] = this[EVT_KEY][name] || []
