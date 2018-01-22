@@ -23,7 +23,7 @@ module.exports = params => new Promise((resolve, reject) => {
 		$header.removeChild(script)
 		clearTimeout(script.timer)
 		delete window[callback]
-		console.log(json)
+		// console.log(json)
 		resolve(json) // reason: you can
 	}
 	if(timeout){

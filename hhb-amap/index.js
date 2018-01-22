@@ -38,12 +38,15 @@ class Amap extends Application{
 		if(loader){
 			return this[LOADER] = loader
 		}
+		// console.log({loader})
+		this.emit('READY', 'AMap' in window && window['AMap'])
 		return this[LOADER] = 'AMap' in window && window['AMap']
 	}
     // 创建一个应用
 	async create(){
 		const amap = await this.loader()
-		this[MAP] = amap.Map(this.config.container, this.config.option)
+		this[MAP] = new amap.Map(this.config.container, this.config.option)
+		// console.log(this[MAP], amap, this)
 		this[MAP].plugin('AMap.Geolocation', () => {
 			this[GEO] = new amap.Geolocation({
 	            enableHighAccuracy: true,//是否使用高精度定位，默认:true
