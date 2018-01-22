@@ -5,7 +5,6 @@ const Message = require('hhb-message')
 const http = require('hhb-http')
 
 const USER_KEY = Symbol('hhb#USER_KEY')
-// const MESSAGE = Symbol('hhb#MESSAGE')
 
 class User extends Application{
 	//

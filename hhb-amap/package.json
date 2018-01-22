@@ -1,0 +1,14 @@
+{
+  "name": "hhb-amap",
+  "version": "1.0.0",
+  "description": "amap",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "map"
+  ],
+  "author": "txp",
+  "license": "ISC"
+}

@@ -7,11 +7,11 @@ const EVT_KEY = Symbol('hhb#EVT_KEY')
 const EVT_EMIT = Symbol('hhb#EVT_EMIT')
 const EVT_LISTEN = Symbol('hhb#EVT_LISTEN')
 
-class Application {
+module.exports = class Application {
 	constructor(){
 		this[EVT_KEY] = {}
 	}
-	@check.isAllowEventListener
+	// @check.isAllowEventListener
 	on(name, event){
 		this[EVT_KEY][name] = this[EVT_KEY][name] || []
 		return this[EVT_KEY][name].push({
@@ -19,7 +19,7 @@ class Application {
 			event
 		})
 	}
-	@check.isAllowEventListener
+	// @check.isAllowEventListener
 	once(name, event){
 		this[EVT_KEY][name] = this[EVT_KEY][name] || []
 		return this[EVT_KEY][name].push({
@@ -66,5 +66,9 @@ class Application {
 	async emit(name, ...rest){
 		const listeners = this[EVT_LISTEN](name, true) || []
 		return await this[EVT_EMIT](listeners, ...rest)
+	}
+	// 上报错误
+	async report(e){
+		// 
 	}
 }
