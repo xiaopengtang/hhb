@@ -7,7 +7,8 @@
 	"plugin": [], // 所需插件
 	"container": '', //所在el的id
 	"option": {},
-	"Geolocation": {} // Geolocation配置
+	"Geolocation": {}, // Geolocation配置
+	'time': 3*1000, //多长时间刷一次地址
 
 }
 ```

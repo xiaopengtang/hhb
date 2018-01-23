@@ -6,12 +6,15 @@ const AMAP = Symbol('hhb#AMAP')
 const LOADER = Symbol('hhb#LOADER')
 const MAP = Symbol('hhb#MAP')
 const GEO = Symbol('hhb#GEO')
+const TIMER = Symbol('hhb#TIMER')
+const POSITION = Symbol('hhb#POSITION')
+const TIME_KEY = Symbol('hhb#TIME_KEY')
 
 class Amap extends Application{
 	constructor(){
 		super()
 		// 添加当前用户的位置
-		this.on('COMPLETE', info => this.addMark(info.position))
+		// this.on('COMPLETE', info => this.addMark(info.position))
 		// 定位失败
 		this.on('ERROR', e => this.report(e))
 	}
@@ -19,12 +22,23 @@ class Amap extends Application{
 	get config(){
 		return config('amap')
 	}
+	// 获取amap
+	get map(){
+		return this[MAP]
+	}
+	get amap(){
+		return this[LOADER]
+	}
+	// 获取插件
+	get geo(){
+		return this[GEO]
+	}
 	// 加载控件
 	async loader(){
 		if(this[LOADER]){
 			return this[LOADER]
 		}
-		let url = '//webapi.amap.com/maps'
+		let url = 'http://webapi.amap.com/maps'
 		let v = '1.4.3'
 		const key = this.config.key
 		let plugin = this.config.plugin
@@ -42,10 +56,30 @@ class Amap extends Application{
 		this.emit('READY', 'AMap' in window && window['AMap'])
 		return this[LOADER] = 'AMap' in window && window['AMap']
 	}
+	render(container){
+		// const amap = await this.loader()
+		const $map = new this[LOADER].Map(container, this.config.option)
+    // 添加控制器
+		$map.addControl(this[GEO])
+		return $map
+	}
+	[POSITION](){
+		return new Promise(resolve => {
+			this.once('COMPLETE', info => resolve(info))
+			this[GEO].getCurrentPosition()
+		})
+	}
+	async [TIMER](){
+		const info = await this[POSITION]()
+		this[TIME_KEY] && clearTimeout(this[TIME_KEY])
+		this[TIME_KEY] = setTimeout(() => this[TIMER](), this.config.time || 5*1000)
+		return info
+	}
+
     // 创建一个应用
-	async create(){
+	async listen(){
 		const amap = await this.loader()
-		this[MAP] = new amap.Map(this.config.container, this.config.option)
+		this[MAP] = new amap.Map('iCenter') //new amap.Map(this.config.container, this.config.option)
 		// console.log(this[MAP], amap, this)
 		this[MAP].plugin('AMap.Geolocation', () => {
 			this[GEO] = new amap.Geolocation({
@@ -64,7 +98,7 @@ class Amap extends Application{
 	        // 添加面板
 	        this[MAP].addControl(this[GEO])
 	        // 获取当前位置
-	        this[GEO].getCurrentPosition()
+	        this[TIMER]()
 	        // 添加事件监听
 	        amap.event.addListener(this[GEO], 'complete', (...arg) => this.emit('COMPLETE', ...arg))
 	        amap.event.addListener(this[GEO], 'error', (...arg) => this.emit('ERROR', ...arg))
@@ -80,7 +114,8 @@ class Amap extends Application{
 
 
 
-exports = module.exports = {
+exports = module.exports = new Amap()
+/*{
 	// 获取扩展的插件
 	get loader(){
 		if(exports[AMAP]){
@@ -88,5 +123,11 @@ exports = module.exports = {
 		}
 		exports[AMAP] = new Amap()
 		return exports[AMAP]
+	},
+	async listen(){
+		if(exports[AMAP]){
+			return exports[AMAP]
+		}
+		exports[AMAP] = new Amap()
 	}
-}
+}*/
