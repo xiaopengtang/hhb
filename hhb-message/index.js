@@ -54,10 +54,13 @@ class Message extends Application {
 	}
     // 唤起messgae
 	async [ACT_MESS](mess){
+		let message = Strophe.getText(mess.getElementsByTagName('body')[0])
+		const arrEntities = {'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"'}
+		message = message.replace(/&(lt|gt|nbsp|amp|quot);/ig,(all,t) => arrEntities[t])
 		return await this.emit('MESSAGE', {
 			to: mess.getAttribute('to'),
 			from: mess.getAttribute('from'),
-			message: Strophe.getText(mess.getElementsByTagName('body')[0])
+			message
 		})
 	}
 
