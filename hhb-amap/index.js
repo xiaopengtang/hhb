@@ -59,11 +59,11 @@ class Amap extends Application{
 	render(container){
 		// const amap = await this.loader()
 		const $map = new this[LOADER].Map(container, this.config.option)
-    // 添加控制器
+        // 添加控制器
 		$map.addControl(this[GEO])
 		return $map
 	}
-	[POSITION](){
+	/*[POSITION](){
 		return new Promise(resolve => {
 			this.once('COMPLETE', info => resolve(info))
 			this[GEO].getCurrentPosition()
@@ -74,7 +74,7 @@ class Amap extends Application{
 		this[TIME_KEY] && clearTimeout(this[TIME_KEY])
 		this[TIME_KEY] = setTimeout(() => this[TIMER](), this.config.time || 5*1000)
 		return info
-	}
+	}*/
 
     // 创建一个应用
 	async listen(){
@@ -97,11 +97,12 @@ class Amap extends Application{
 	        })
 	        // 添加面板
 	        this[MAP].addControl(this[GEO])
-	        // 获取当前位置
-	        this[TIMER]()
+	        // this[TIMER]()
 	        // 添加事件监听
 	        amap.event.addListener(this[GEO], 'complete', (...arg) => this.emit('COMPLETE', ...arg))
 	        amap.event.addListener(this[GEO], 'error', (...arg) => this.emit('ERROR', ...arg))
+	        // 获取当前位置
+	        this[GEO].getCurrentPosition()
 		})
 	}
 	// 添加mark
