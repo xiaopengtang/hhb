@@ -32,7 +32,7 @@ class User extends Application{
 			return await this.emit('LOGIN_ERROR', info)
 		}
 		this.update(info)
-		return this.$message.login(name, pw, info.id)
+		return this.$message.login(name, pw)
 	}
 }
 
