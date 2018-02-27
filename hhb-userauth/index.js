@@ -1,6 +1,6 @@
 'use strict'
 
-const {Application, config} = require('hhb-core')
+/*const {Application, config} = require('hhb-core')
 const Message = require('hhb-message')
 const http = require('hhb-http')
 
@@ -38,4 +38,27 @@ class User extends Application{
 
 exports = module.exports = new User
 
-exports.User = User
+exports.User = User*/
+
+const STATE = Symbol('hhb#STATE')
+
+exports = module.exports = {
+	// 
+	[STATE] = {
+		id: '',
+		name: '',
+		pw: '',
+		imageUri: ''
+	},
+	get state(){
+		return exports[STATE]
+	},
+	set state(val){
+		exports[STATE] = val
+	},
+	// 设置为null
+	setPassWordNull(){
+		exports[STATE].pw = null
+	}
+}
+
