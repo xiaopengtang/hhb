@@ -44,11 +44,23 @@ const STATE = Symbol('hhb#STATE')
 
 exports = module.exports = {
 	// 
-	[STATE] = {
-		id: '',
-		name: '',
-		pw: '',
-		imageUri: ''
+	[STATE]: {
+		id: '0000000002',
+		name: 'ydj-b85-hd3',
+		pw: '123456',
+		imageUri: 'https://ionicframework.com/dist/preview-app/www/assets/img/avatar-ts-woody.png'
+	},
+
+	get messageName(){
+		return `${exports[STATE].id}@${exports[STATE].name}`
+	},
+
+	get id(){
+		return exports[STATE].id
+	},
+
+	get name(){
+		return exports[STATE].name
 	},
 	get state(){
 		return exports[STATE]
