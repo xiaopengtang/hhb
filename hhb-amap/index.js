@@ -9,12 +9,13 @@ const GEO = Symbol('hhb#GEO')
 const TIMER = Symbol('hhb#TIMER')
 const POSITION = Symbol('hhb#POSITION')
 const TIME_KEY = Symbol('hhb#TIME_KEY')
+const UI = Symbol('hhb#UI')
 
 class Amap extends Application{
 	constructor(){
 		super()
 		// 添加当前用户的位置
-		// this.on('COMPLETE', info => this.addMark(info.position))
+		this.on('COMPLETE', info => console.log({info}))//this.addMark(info.position))
 		// 定位失败
 		this.on('ERROR', e => this.report(e))
 	}
@@ -32,6 +33,19 @@ class Amap extends Application{
 	// 获取插件
 	get geo(){
 		return this[GEO]
+	}
+	get UI(){
+		return this[UI]
+	}
+	// UI控件
+	async loaderUI(){
+		const url = 'http://webapi.amap.com/ui/1.0/main.js?v=1.0.11'
+		// const data = {v: '1.0.11'}
+		const loader = await jsonp({
+			url,
+			// data
+		})
+		this[UI] = window.AMapUI
 	}
 	// 加载控件
 	async loader(){
@@ -54,16 +68,20 @@ class Amap extends Application{
 		}
 		// console.log({loader})
 		this.emit('READY', 'AMap' in window && window['AMap'])
-		return this[LOADER] = 'AMap' in window && window['AMap']
+		let ret = this[LOADER] = 'AMap' in window && window['AMap']
+		/*if(!this[UI]){
+			await this.loaderUI()
+		}*/
+		return ret
 	}
 	render(container){
 		// const amap = await this.loader()
 		const $map = new this[LOADER].Map(container, this.config.option)
-        // 添加控制器
+    // 添加控制器
 		$map.addControl(this[GEO])
 		return $map
 	}
-	/*[POSITION](){
+	[POSITION](){
 		return new Promise(resolve => {
 			this.once('COMPLETE', info => resolve(info))
 			this[GEO].getCurrentPosition()
@@ -74,7 +92,7 @@ class Amap extends Application{
 		this[TIME_KEY] && clearTimeout(this[TIME_KEY])
 		this[TIME_KEY] = setTimeout(() => this[TIMER](), this.config.time || 5*1000)
 		return info
-	}*/
+	}
 
     // 创建一个应用
 	async listen(){
@@ -90,19 +108,18 @@ class Amap extends Application{
 	            showButton: true,        //显示定位按钮，默认：true
 	            buttonPosition: 'LB',    //定位按钮停靠位置，默认：'LB'，左下角
 	            // buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-	            showMarker: true,        //定位成功后在定位到的位置显示点标记，默认：true
+	            showMarker: false, //true,        //定位成功后在定位到的位置显示点标记，默认：true
 	            showCircle: true,        //定位成功后用圆圈表示定位精度范围，默认：true
-	            panToLocation: true,     //定位成功后将定位到的位置作为地图中心点，默认：true
-	            zoomToAccuracy:true      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+	            panToLocation: false, //true,     //定位成功后将定位到的位置作为地图中心点，默认：true
+	            zoomToAccuracy: true //true      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
 	        })
 	        // 添加面板
 	        this[MAP].addControl(this[GEO])
-	        // this[TIMER]()
+	        // 获取当前位置
+	        this[TIMER]()
 	        // 添加事件监听
 	        amap.event.addListener(this[GEO], 'complete', (...arg) => this.emit('COMPLETE', ...arg))
 	        amap.event.addListener(this[GEO], 'error', (...arg) => this.emit('ERROR', ...arg))
-	        // 获取当前位置
-	        this[GEO].getCurrentPosition()
 		})
 	}
 	// 添加mark
