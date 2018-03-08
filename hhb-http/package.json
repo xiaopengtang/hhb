@@ -1,6 +1,6 @@
 {
   "name": "hhb-http",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.17.1"
+    "axios": "^0.17.1",
+    "hhb-core": "^1.0.5",
+    "lodash": "^4.17.5"
   }
 }

@@ -9,7 +9,7 @@ const GEO = Symbol('hhb#GEO')
 const TIMER = Symbol('hhb#TIMER')
 const POSITION = Symbol('hhb#POSITION')
 const TIME_KEY = Symbol('hhb#TIME_KEY')
-
+const MARKERLIST = Symbol('hhb#MARKERLIST')
 class Amap extends Application{
 	constructor(){
 		super()
@@ -17,6 +17,7 @@ class Amap extends Application{
 		// this.on('COMPLETE', info => this.addMark(info.position))
 		// 定位失败
 		this.on('ERROR', e => this.report(e))
+		this[MARKERLIST] = {}
 	}
 	// 获取配置
 	get config(){
@@ -32,6 +33,28 @@ class Amap extends Application{
 	// 获取插件
 	get geo(){
 		return this[GEO]
+	}
+	/**
+	* @param data	"distance": 0.1724, 				//具体 单位 米
+					"fromUserId": "0000000002",		// 附近的人
+					"latitude": 32.08809086743,			//纬度
+					"longitude": 118.887114822,			//经度
+					"online": 1,						//是否在线 1在线 
+					"toUserId": "0000000001"			//当前用户
+	*
+	*
+	*/
+	// 渲染marker
+	renderMarkList(data){
+		let position = [data.latitude, data.longitude]
+		if(!this[MARKERLIST][data.fromUserId]){
+			this[MARKERLIST][data.fromUserId] = this[LOADER].Marker({
+	            position//: [data.latitude, data.longitude]
+	        });
+			return this[MARKERLIST][data.fromUserId].setMap(this[MAP])
+		}else{
+			this[MARKERLIST][data.fromUserId].setPosition(position)
+		}
 	}
 	// 加载控件
 	async loader(){
