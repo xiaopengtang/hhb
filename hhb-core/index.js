@@ -3,5 +3,6 @@
 exports = module.exports = {
 	Application: require('./lib/application'),
 	config: require('./lib/config'),
-	jsonp: require('./lib/jsonp')
+	jsonp: require('./lib/jsonp'),
+  subscrible: require('./lib/subscrible')
 }

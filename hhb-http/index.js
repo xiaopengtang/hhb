@@ -8,12 +8,12 @@ const _ = require('lodash')
 const INSTANCE = Symbol('HHB#INSTANCE')
 
 class $http {
-	constructor(config){
-		config = config || config('requestConfig.setting') || {}
+	constructor(setting){
+		setting = setting || config('requestConfig.setting') || {}
 		this[INSTANCE] = axios.create(_.assign({
 			withCredentials: true,
 			baseURL: this.config.host,
-		}, config))
+		}, setting))
 	}
 	get $instance(){
 		return this[INSTANCE]
@@ -23,19 +23,23 @@ class $http {
 	}
 	//
 	curl(requestUrl, data){
-		const r = /^([^:]+)?:(.+)$/
-		let url = '', method = 'post'
-		if(r.test(requestUrl)){
-			url = RegExp.$2
-			method = RegExp.$1
-		}else{
-			url = requestUrl
-		}
-		const IS_GET = /get/.test(method)
-		let action = this.$instance[method]
-		action = _.isFunction(action) ? action : this.$instance.post
-		let params = IS_GET ? {params: data} : data
-		return action(url, params || {})
+		return new Promise(resolve => {
+      const r = /^(([^:]+):)?(.+)$/
+      let url = '', method = 'post'
+      const settingUrl = this.config.map[requestUrl]
+      if(r.test(settingUrl)){
+        url = RegExp.$3
+        method = RegExp.$2
+      }else{
+        url = requestUrl
+      }
+      console.log(this.config.host, url, this.config.map['QUERY:USER:NEAR_LIST'])
+      const IS_GET = /get/.test(method)
+      let action = this.$instance[method]
+      action = _.isFunction(action) ? action : this.$instance.post
+      let params = IS_GET ? {params: data} : data
+      return action(url, params || {}).then(res => resolve(res.data)).catch(e => resolve(null))
+    })
 	}
 }
 
