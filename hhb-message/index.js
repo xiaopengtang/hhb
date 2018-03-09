@@ -43,16 +43,22 @@ class Message extends Application {
 	    } else if (status == Strophe.Status.DISCONNECTED) {
 	    	return await this.emit('DISCONNECTED')
 	    }else if(status == Strophe.Status.CONNECTED){
-        // console.log(status)
-        await this.emit('READY')
-        this[CONNECT].addHandler(this[ACT_MESS].bind(this), null, 'message', null, null, null)
-        this[CONNECT].send($pres().tree())
+	        await this.emit('READY')
+	        this[CONNECT].addHandler(this[ACT_MESS].bind(this), null, 'message', null, null, null)
+	        this[CONNECT].send($pres().tree())
       }
 
 	}
     // 唤起messgae
 	async [ACT_MESS](message){
-		return await this.emit('MESSAGE', message)
+		let message = Strophe.getText(mess.getElementsByTagName('body')[0])
+		const arrEntities = {'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"'}
+		message = message.replace(/&(lt|gt|nbsp|amp|quot);/ig,(all,t) => arrEntities[t])
+		return await this.emit('MESSAGE', {
+			to: mess.getAttribute('to'),
+			from: mess.getAttribute('from'),
+			message
+		})
 	}
 
   subscrible(name, fn){
