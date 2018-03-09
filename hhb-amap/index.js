@@ -51,16 +51,37 @@ class Amap extends Application{
   *
   */
   // 渲染marker
-  renderMarkList(data){
+  renderMark(data){
     let position = [data.latitude, data.longitude]
+    // 清除对应的mark
+    if(!data.online){
+      return this[MARKERLIST][data.fromUserId] && this[MARKERLIST][data.fromUserId].setMap(null)
+    }
     if(!this[MARKERLIST][data.fromUserId]){
-      this[MARKERLIST][data.fromUserId] = this[LOADER].Marker({
+      this[MARKERLIST][data.fromUserId] = new this[LOADER].Marker({
               position//: [data.latitude, data.longitude]
           });
-      return this[MARKERLIST][data.fromUserId].setMap(this[MAP])
+      this[MARKERLIST][data.fromUserId].setMap(this[MAP])
+      this.amap.event.clearListeners(this[MARKERLIST][data.fromUserId], 'click')
+      this.amap.event.addListener(this[MARKERLIST][data.fromUserId], 'click', e => this.emit('CLICK:MARKER', data))
     }else{
       this[MARKERLIST][data.fromUserId].setPosition(position)
     }
+  }
+  // 粗暴
+  clearMarker(){
+    this[MARKERLIST] = {}
+  }
+  renderMarkList(list){
+    const status = Array.isArray(list) && list.length
+    if(!status){
+      return
+    }
+    return list.forEach(it => this.renderMark(it))
+  }
+  // 清除缓存
+  removeMapListener(){
+    //
   }
   get UI(){
     return this[UI]
