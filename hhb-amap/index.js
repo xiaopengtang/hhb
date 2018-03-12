@@ -125,7 +125,7 @@ class Amap extends Application{
   }
   render(container){
     // const amap = await this.loader()
-    const $map = new this[LOADER].Map(container, this.config.option)
+    const $map = new this[LOADER].Map(container/*, this.config.option*/)
     // 添加控制器
     // $map.addControl(this[GEO])
     return $map
