@@ -101,27 +101,33 @@ class Amap extends Application{
     if(this[LOADER]){
       return this[LOADER]
     }
-    let url = 'http://webapi.amap.com/maps'
-    const key = this.config.key
-    const v = this.config.v || '1.4.3'
-    let plugin = this.config.plugin
-    plugin = Array.isArray(plugin) ? plugin.join(',') : plugin
-    const data = {key, v}
-    plugin && (data.plugin = plugin) ;
-    const loader = await jsonp({
-      url,
-      data
-    })
-    if(loader){
-      return this[LOADER] = loader
+    const checkAmap = () => 'AMap' in window && window['AMap']
+    this[LOADER] = checkAmap()
+    if(!this[LOADER]){
+      let url = 'http://webapi.amap.com/maps'
+      const key = this.config.key
+      const v = this.config.v || '1.4.3'
+      let plugin = this.config.plugin
+      plugin = Array.isArray(plugin) ? plugin.join(',') : plugin
+      const data = {key, v}
+      plugin && (data.plugin = plugin) ;
+      const loader = await jsonp({
+        url,
+        data
+      })
+      if(loader){
+        return this[LOADER] = loader
+      }
+      this[LOADER] = checkAmap()
+      // console.log({loader})
+      this.emit('READY', this[LOADER])
     }
-    // console.log({loader})
-    this.emit('READY', 'AMap' in window && window['AMap'])
-    let ret = this[LOADER] = 'AMap' in window && window['AMap']
+    
+    //let ret = this[LOADER] = 'AMap' in window && window['AMap']
     /*if(!this[UI]){
       await this.loaderUI()
     }*/
-    return ret
+    return this[LOADER]
   }
   render(container){
     // const amap = await this.loader()
