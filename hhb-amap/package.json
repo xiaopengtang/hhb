@@ -1,6 +1,6 @@
 {
   "name": "hhb-amap",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "amap",
   "main": "index.js",
   "scripts": {
